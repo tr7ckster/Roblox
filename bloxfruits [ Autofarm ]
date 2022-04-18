@@ -30,8 +30,6 @@ function tweenFruit(fruitPos)
    
    Tween.Completed:Wait()
    
-   Wait(3)
-   
    CanTween = true
 end
 
@@ -42,8 +40,10 @@ for i, getFruit in pairs(fruitTable) do
     end
 end
 
-repeat wait(5) until #fruitTable == 0
+repeat wait() until #fruitTable == 0
 
 wait(1)
 
-serverHop()
+if Repeat == true then
+   serverHop()
+end
