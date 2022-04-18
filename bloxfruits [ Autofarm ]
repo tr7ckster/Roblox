@@ -1,23 +1,28 @@
 local fruitTable = {}
 
+for i, FruitFound in pairs(game.Workspace:GetChildren()) do
+   if table.find(Fruits, FruitFound.Name) then
+      table.insert(fruitTable, FruitFound.Handle.Position)
+   end
+end
+
 CanTween = true
 
 function serverHop()
-
+   print("SErver hopping")
 end
 
 function tweenFruit(fruitPos)
    local TweenService = game:GetService("TweenService")
 
    local HRP = game.Players.LocalPlayer.Character.HumanoidRootPart
-   local toObject = fruitPos
 
-   local Distance = (HRP.Position - toObject.Position).Magnitude
+   local Distance = (HRP.Position - fruitPos).Magnitude
    local Time = Distance / 200
 
    local Info = TweenInfo.new(Time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false)
    local Properties = {
-       CFrame = CFrame.new(fruitPos.X, fruitPos.Y, fruitPos.Z)
+       CFrame = CFrame.new(fruitPos)
     }
 
    local Tween = TweenService:Create(HRP, Info, Properties)
@@ -25,25 +30,20 @@ function tweenFruit(fruitPos)
    
    Tween.Completed:Wait()
    
-   wait(0.5)
+   Wait(3)
    
    CanTween = true
 end
 
-for i, FruitFound in pairs(game.Workspace:GetChildren()) do
-   if table.find(Fruits, FruitFound.Name) then
-      table.insert(fruitTable, FruitFound.Position)
-   end
+for i, getFruit in pairs(fruitTable) do
+    if CanTween == true then
+       tweenFruit(getFruit)
+       CanTween = false
+    end
 end
 
-if fruitTable ~= {} then
-   for i, getFruit in pairs(fruitTable) do
-      if getFruit then
-         tweenFruit(getFruit)
-         CanTween = false
-      end
-   end
-else
-if Repeat == true then
-   serverHop()
-end
+repeat wait(5) until #fruitTable == 0
+
+wait(1)
+
+serverHop()
