@@ -6,6 +6,19 @@ for i, FruitFound in pairs(game.Workspace:GetChildren()) do
    end
 end
 
+function storeFruit()
+    for i, Fruitpack in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+       if Fruitpack.Name:match("Fruit") then
+          local str = string.split(Fruitpack.Name, " ")
+       
+          local ohString1 = "StoreFruit"
+          local ohString2 = str[1].."-"..str[1]
+
+          game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(ohString1, ohString2)   
+       end
+    end
+end
+
 CanTween = true
 
 function serverHop()
@@ -19,7 +32,7 @@ function tweenFruit(fruitPos)
 
    local Distance = (HRP.Position - fruitPos).Magnitude
    local Time = Distance / 200
-
+   
    local Info = TweenInfo.new(Time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false)
    local Properties = {
        CFrame = CFrame.new(fruitPos)
@@ -31,7 +44,12 @@ function tweenFruit(fruitPos)
    Tween.Completed:Wait()
    
    CanTween = true
-   print("DONE")
+   
+   wait(1)
+   
+   if Store == true then
+       storeFruit()
+   end
 end
 
 for i, getFruit in pairs(fruitTable) do
@@ -41,8 +59,7 @@ for i, getFruit in pairs(fruitTable) do
     end
 end
 
-wait(5)
-
 if Repeat == true then
+    wait(5)
    serverHop()
 end
