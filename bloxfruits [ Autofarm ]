@@ -1,1 +1,7 @@
-print(Pants)
+local fruitTable = {}
+
+for i, FruitFound in pairs(game.Workspace:GetChildren()) do
+if table.find(Fruits, FruitFound.Name) then
+print("FOIND")
+end
+end
