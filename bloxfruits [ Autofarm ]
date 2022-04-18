@@ -1,7 +1,49 @@
 local fruitTable = {}
 
-for i, FruitFound in pairs(game.Workspace:GetChildren()) do
-if table.find(Fruits, FruitFound.Name) then
-print("FOIND")
+CanTween = true
+
+function serverHop()
+
 end
+
+function tweenFruit(fruitPos)
+   local TweenService = game:GetService("TweenService")
+
+   local HRP = game.Players.LocalPlayer.Character.HumanoidRootPart
+   local toObject = fruitPos
+
+   local Distance = (HRP.Position - toObject.Position).Magnitude
+   local Time = Distance / 200
+
+   local Info = TweenInfo.new(Time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false)
+   local Properties = {
+       CFrame = CFrame.new(fruitPos.X, fruitPos.Y, fruitPos.Z)
+    }
+
+   local Tween = TweenService:Create(HRP, Info, Properties)
+   Tween:Play()
+   
+   Tween.Completed:Wait()
+   
+   wait(0.5)
+   
+   CanTween = true
+end
+
+for i, FruitFound in pairs(game.Workspace:GetChildren()) do
+   if table.find(Fruits, FruitFound.Name) then
+      table.insert(fruitTable, FruitFound.Position)
+   end
+end
+
+if fruitTable ~= {} then
+   for i, getFruit in pairs(fruitTable) do
+      if getFruit then
+         tweenFruit(getFruit)
+         CanTween = false
+      end
+   end
+else
+if Repeat == true then
+   serverHop()
 end
