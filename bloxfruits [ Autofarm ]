@@ -1,4 +1,15 @@
+Fruits = {
+    "Spike Fruit",
+    "Spring Fruit",
+    "Bomb Fruit"
+}
+
+Webhook = ""
+Store = true
+Repeat = true   
+
 local fruitTable = {}
+canTP = false
 
 for i, FruitFound in pairs(game.Workspace:GetChildren()) do
    if table.find(Fruits, FruitFound.Name) then
@@ -6,36 +17,33 @@ for i, FruitFound in pairs(game.Workspace:GetChildren()) do
    end
 end
 
-function webhookSend()
-
-for i, Fruitpack in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-   if Fruitpack.Name:match("Fruit") then
-      local str = string.split(Fruitpack.Name, " ")
-      
-     msg = {
-     ["embeds"] = {{
-     ["color"] = 0000000,
-     ["description"] = "description",
-     ["author"] = {
-     ["name"] = str.."-"..str.." Was Found"
-     }}
-   }
-   
-   local response = syn.request(
-                                 {
-                                   Url = webhook,
-                                   Method = "POST",
-                                   Headers = {
-                                   ["Content-Type"] = "application/json"
-                                   },
-                                   Body = game:GetService("HttpService"):JSONEncode(msg)
-                                 }
-                )
+function webhookPost(MSG)
+    
+msg = {
+["embeds"] = {{
+["color"] = 235000,
+["description"] = MSG.." was found!",
+["author"] = {
+["name"] = "Fruit Found!"
+}}
 }
-   end
+}
+
+local response = syn.request(
+{
+Url = Webhook,
+Method = "POST",
+Headers = {
+["Content-Type"] = "application/json"
+},
+Body = game:GetService("HttpService"):JSONEncode(msg)
+}
+)
 end
 
 function storeFruit()
+    wait(3)
+    print("Storeing")
     for i, Fruitpack in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
        if Fruitpack.Name:match("Fruit") then
           local str = string.split(Fruitpack.Name, " ")
@@ -43,23 +51,23 @@ function storeFruit()
           local ohString1 = "StoreFruit"
           local ohString2 = str[1].."-"..str[1]
 
-          game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(ohString1, ohString2)   
+          game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(ohString1, ohString2) 
+          
+          print("HEEYEYEY")
+          if #fruitTable == 0 and Repeat == true then
+              Hop()
+          end
        end
     end
 end
 
-CanTween = true
-
-function serverHop()
-  local sl = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/".. game.PlaceId.. "/servers/Public?sortOrder=Asc&limit=100"))
-     for i,v in pairs(sl.data) do
-        if v.playing ~= v.maxPlayers then
-            game:service'TeleportService':TeleportToPlaceInstance(game.PlaceId, v.id)
-        end
-    end
+function Hop()
+   print("HOP")
 end
 
-function tweenFruit(fruitPos)
+CanTween = true
+
+function tweenFruit(fruitPos, index)
    local TweenService = game:GetService("TweenService")
 
    local HRP = game.Players.LocalPlayer.Character.HumanoidRootPart
@@ -79,23 +87,31 @@ function tweenFruit(fruitPos)
    
    CanTween = true
    
-   wait(1)
-  
+   table.remove(fruitTable, index)
+   print(#fruitTable)
    if Store == true then
-       storeFruit()
+      if #fruitTable == 0 then
+          storeFruit()
+       end
+   else
+      if #fruitTable == 0 and Repeat == true then
+         Hop() 
+      end
    end
-   
-    coroutine.wrap(webhookSend)()
 end
 
-for i, getFruit in pairs(fruitTable) do
-    if CanTween == true then
-       tweenFruit(getFruit)
-       CanTween = false
+if #fruitTable > 0 then
+   for i, getFruit in pairs(fruitTable) do
+      if CanTween == true then
+         tweenFruit(getFruit, i)
+         CanTween = false
+      end
+   end 
+else
+    if Repeat == true then
+       Hop() 
     end
 end
 
-if Repeat == true then
-    wait(5)
-   serverHop()
-end
+
+
