@@ -6,6 +6,35 @@ for i, FruitFound in pairs(game.Workspace:GetChildren()) do
    end
 end
 
+function webhookSend()
+
+for i, Fruitpack in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+   if Fruitpack.Name:match("Fruit") then
+      local str = string.split(Fruitpack.Name, " ")
+      
+     msg = {
+     ["embeds"] = {{
+     ["color"] = 0000000,
+     ["description"] = "description",
+     ["author"] = {
+     ["name"] = str.."-"..str.." Was Found"
+     }}
+   }
+   
+   local response = syn.request(
+                                 {
+                                   Url = webhook,
+                                   Method = "POST",
+                                   Headers = {
+                                   ["Content-Type"] = "application/json"
+                                   },
+                                   Body = game:GetService("HttpService"):JSONEncode(msg)
+                                 }
+                )
+}
+   end
+end
+
 function storeFruit()
     for i, Fruitpack in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
        if Fruitpack.Name:match("Fruit") then
@@ -22,7 +51,12 @@ end
 CanTween = true
 
 function serverHop()
-   print("SErver hopping")
+  local sl = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/".. game.PlaceId.. "/servers/Public?sortOrder=Asc&limit=100"))
+     for i,v in pairs(sl.data) do
+        if v.playing ~= v.maxPlayers then
+            game:service'TeleportService':TeleportToPlaceInstance(game.PlaceId, v.id)
+        end
+    end
 end
 
 function tweenFruit(fruitPos)
@@ -46,10 +80,12 @@ function tweenFruit(fruitPos)
    CanTween = true
    
    wait(1)
-   
+  
    if Store == true then
        storeFruit()
    end
+   
+    coroutine.wrap(webhookSend)()
 end
 
 for i, getFruit in pairs(fruitTable) do
