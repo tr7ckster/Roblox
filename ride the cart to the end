@@ -1,0 +1,70 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/miroeramaa/TurtleLib/main/TurtleUiLib.lua"))()
+local Main = library:Window("Main")
+
+TurnCarsOn = false
+
+Main:Label("Buttons", Color3.fromRGB(0, 188, 255))
+
+Main:Button("[Increase]", function()
+   for i, Button in pairs(game.Workspace:GetDescendants()) do
+       if Button.Name == "Up" then
+           fireclickdetector(Button.Click)
+       end
+    end
+end)
+
+Main:Button("[Decrease]", function()
+   for i, Button in pairs(game.Workspace:GetDescendants()) do
+       if Button.Name == "Down" then
+           fireclickdetector(Button.Click)
+       end
+    end
+end)
+
+Main:Button("[Spawn]", function()
+   for i, Regen in pairs(game.Workspace:GetDescendants()) do
+       if Regen.Name == "1Regen" or Regen.Name == "2Regen" or Regen.Name == "4Regen" then
+           fireclickdetector(Regen.Click)
+       end
+    end
+end)
+
+Main:Button("[Give All]", function()
+   for i, GiverParent in pairs(game:GetService("Workspace").PathGivers:GetChildren()) do
+       if GiverParent.Giver then
+          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = GiverParent.Giver.CFrame
+          wait(0.75)
+       end
+    end
+end)
+
+Main:Button("[Teleport]", function()
+   game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").SpawnLocation.CFrame 
+end)
+
+Main:Toggle("[Turn On]", false, function(bool)
+    if bool == false then
+       TurnCarsOn = true
+       bool = true
+    else
+       TurnCarsOff = false
+       bool = false
+    end
+end)
+
+Main:Label("Destroy UI", Color3.fromRGB(0, 188, 255))
+
+Main:Button("[Destroy]", function()
+   Library:Destroy()
+end)
+
+while wait(0.5) do
+   if TurnCarsOn == true then
+      for i, On in pairs(game.Workspace:GetDescendants()) do
+         if On.Name == "On" then
+            fireclickdetector(On.Click)
+         end
+      end 
+   end
+end
+
