@@ -1,3 +1,19 @@
+Fruits = {
+    "Spike Fruit",
+    "Spring Fruit",
+    "Bomb Fruit"
+}
+
+Webhook = "https://discord.com/api/webhooks/967356765672964127/OzH5QURZhQE6nPTIOSqbqgHkxGKKYuhM8t7Dk9IkZ8w37-5FDYyBreRNWJBngn4yQta6"
+Store = true
+Repeat = true
+
+local Set = "SetTeam"
+local Team = "Pirates"
+
+game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(Set, Team)
+wait(10)
+
 local fruitTable = {}
 canTP = false
 
@@ -105,4 +121,5 @@ else
 end
 
 
+--loadstring(game:HttpGet("https://raw.githubusercontent.com/tr7ckster/Roblox/main/bloxfruits%20%5B%20Autofarm%20%5D",true))()
 
