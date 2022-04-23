@@ -1,13 +1,3 @@
-Fruits = {
-    "Spike Fruit",
-    "Spring Fruit",
-    "Bomb Fruit"
-}
-
-Webhook = ""
-Store = true
-Repeat = true   
-
 local fruitTable = {}
 canTP = false
 
@@ -15,6 +5,11 @@ for i, FruitFound in pairs(game.Workspace:GetChildren()) do
    if table.find(Fruits, FruitFound.Name) then
       table.insert(fruitTable, FruitFound.Handle.Position)
    end
+end
+
+function Hop()
+   wait(1.5)
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/tr7ckster/Roblox/main/ServerHop%20%5BNot%20Mine%5D",true))()
 end
 
 function webhookPost(MSG)
@@ -42,27 +37,24 @@ Body = game:GetService("HttpService"):JSONEncode(msg)
 end
 
 function storeFruit()
-    wait(3)
+    wait(1)
     print("Storeing")
-    for i, Fruitpack in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+    for i, Fruitpack in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
        if Fruitpack.Name:match("Fruit") then
           local str = string.split(Fruitpack.Name, " ")
        
           local ohString1 = "StoreFruit"
           local ohString2 = str[1].."-"..str[1]
-
+          fruitTable[Fruitpack] = nil;
+          
           game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(ohString1, ohString2) 
           
-          print("HEEYEYEY")
+          webhookPost(ohString2)
           if #fruitTable == 0 and Repeat == true then
-              Hop()
+              coroutine.wrap(Hop)()
           end
        end
     end
-end
-
-function Hop()
-   print("HOP")
 end
 
 CanTween = true
