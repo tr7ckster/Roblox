@@ -8,8 +8,7 @@ for i, FruitFound in pairs(game.Workspace:GetChildren()) do
 end
 
 function Hop()
-   wait(1.5)
-   loadstring(game:HttpGet("https://raw.githubusercontent.com/tr7ckster/Roblox/main/ServerHop%20%5BNot%20Mine%5D",true))()
+  game:GetService("TeleportService"):Teleport(game.PlaceId)
 end
 
 function webhookPost(MSG)
