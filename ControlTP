@@ -1,0 +1,30 @@
+local controlHeld = false
+
+game:GetService("UserInputService").InputBegan:Connect(function(k, gameproccessed)
+    if not gameproccessed then
+        if k.KeyCode == Enum.KeyCode.LeftControl then
+            controlHeld = true
+        end
+    end
+end)
+
+game:GetService("UserInputService").InputEnded:Connect(function(k, gameproccessed)
+    if not gameproccessed then
+        if k.KeyCode == Enum.KeyCode.LeftControl then
+            controlHeld = false
+            
+            local Dummy = game.Workspace:FindFirstChild("MrInvisDeleteMe")
+            
+            if Dummy then
+               Dummy:Destroy() 
+            end
+        end
+    end
+end)
+
+game.Players.LocalPlayer:GetMouse().Button1Down:Connect(function()
+    if controlHeld == true then
+        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(game.Players.LocalPlayer:GetMouse().Hit)
+    end
+end)
+
