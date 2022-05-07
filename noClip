@@ -1,5 +1,18 @@
 local noClip = false
 local debounce = false
+local leftControl = false
+
+game:GetService("UserInputService").InputBegan:Connect(function(k, IsTyping)
+    if k.KeyCode == Enum.KeyCode.LeftControl and IsTyping == false then
+        leftControl = true
+    end
+end)
+
+game:GetService("UserInputService").InputEnded:Connect(function(k, IsTyping)
+    if k.KeyCode == Enum.KeyCode.LeftControl and IsTyping == false then
+        leftControl = false
+    end
+end)
 
 function hasProperty(object, property)
     local Test = object[property]
@@ -26,7 +39,7 @@ end
 
 game:GetService("UserInputService").InputBegan:Connect(function(k, gameproccessed)
     if not gameproccessed then
-        if k.KeyCode == Enum.KeyCode.N then
+        if k.KeyCode == Enum.KeyCode.N and leftControl == true then
             if debounce == false then
                 debounce = true
                 
@@ -63,7 +76,3 @@ end)
 game:GetService("RunService").Stepped:Connect(function()
    coroutine.wrap(stateChange)()
 end)
-                            
-                            
-
-
