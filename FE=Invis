@@ -1,0 +1,113 @@
+local Player = game.Players.LocalPlayer
+local Character = Player.Character
+Character.Archivable = true
+local Humanoid = Character.Humanoid
+local Animate = Character.Animate
+
+local leftControl = false
+local Invis = false
+local Debounce = false
+
+for i,v in pairs(Character.HumanoidRootPart:GetChildren()) do
+    if v.Name == "Walking" or v.Name == "Running" then
+        v:Destroy()
+    end
+end
+
+local Platform = Instance.new("Part", game.Workspace)
+Platform.Size = Vector3.new(20, 0.5 ,20)
+Platform.Position = Vector3.new(0, 500, 0)
+Platform.Name = "Platform"
+Platform.Anchored = true
+
+local FakeCharacter = game.Players.LocalPlayer.Character:Clone()
+FakeCharacter.Parent = game.Workspace
+FakeCharacter.HumanoidRootPart.CFrame = Platform.CFrame * CFrame.new(0, 5, 0)
+FakeCharacter.PrimaryPart.Anchored = true
+FakeCharacter.Name = "FakeCharacter"
+FakeCharacter.Animate:Destroy()
+FakeCharacter.Health:Destroy()
+
+function hasProperty(object, Property)
+   local Check = object[Property] 
+end
+
+for i,v in pairs(FakeCharacter:GetDescendants()) do
+   local suc, err = pcall(function() hasProperty(v, "Transparency") end)
+   
+   if suc and v.Name ~= "HumanoidRootPart" then
+      v.Transparency = 0.4 
+   end
+end
+
+for i,v in pairs(FakeCharacter:GetChildren()) do
+   if v:IsA("BasePart") then
+       v.CanCollide = false
+   end
+end
+
+game:GetService("UserInputService").InputBegan:Connect(function(k, IsTyping)
+    if k.KeyCode == Enum.KeyCode.LeftControl and IsTyping == false then
+        leftControl = true
+    end
+end)
+
+game:GetService("UserInputService").InputEnded:Connect(function(k, IsTyping)
+    if k.KeyCode == Enum.KeyCode.LeftControl and IsTyping == false then
+        leftControl = false
+    end
+end)
+
+local AnimR15 = Instance.new("Animation")
+AnimR15.Parent = FakeCharacter
+AnimR15.Name = "Export"
+AnimR15.AnimationId = "rbxassetid://9567068848"
+
+if FakeCharacter:FindFirstChild("Torso") then
+    FakeCharacter.Humanoid.Animator:LoadAnimation(AnimR6):Play()
+elseif FakeCharacter:FindFirstChild("UpperTorso") then
+    FakeCharacter.Humanoid.Animator:LoadAnimation(AnimR15):Play()
+end
+
+game:GetService("UserInputService").InputBegan:Connect(function(k, IsTyping)
+    if k.KeyCode == Enum.KeyCode.M and IsTyping == false and leftControl == true then
+        if Debounce == false then
+            Debounce = true
+            
+            if Invis == false then
+                Invis = true
+                
+                FakeCharacter.PrimaryPart.Anchored = false
+                
+                Player.Character = FakeCharacter
+            
+                local oldPos = Character:GetPrimaryPartCFrame()
+                Character:SetPrimaryPartCFrame(Platform.CFrame * CFrame.new(0, 5, 0))
+                Character.PrimaryPart.Anchored = true
+                FakeCharacter:SetPrimaryPartCFrame(oldPos)
+                
+                game.Workspace.Camera.CameraSubject = FakeCharacter.Humanoid
+                
+                wait(.5)
+                
+                Debounce = false
+            elseif Invis == true then
+                Invis = false
+                local oldPos = FakeCharacter:GetPrimaryPartCFrame()
+                FakeCharacter.PrimaryPart.Anchored = true
+                
+                local realPlayer = game.Workspace:FindFirstChild(Player.Name)
+                Player.Character = realPlayer
+                Player.Character:SetPrimaryPartCFrame(oldPos)
+                Player.Character.PrimaryPart.Anchored = false
+                FakeCharacter:SetPrimaryPartCFrame(Platform.CFrame * CFrame.new(0, 5, 0))
+                
+                game.Workspace.Camera.CameraSubject = Character.Humanoid
+                
+                wait(0.5)
+                
+                Debounce = false
+            end
+        end
+    end
+end)
